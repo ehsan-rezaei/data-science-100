@@ -1,0 +1,69 @@
+```{r تمرین1, message=TRUE, warning=TRUE, paged.print=TRUE}
+library(faraway)
+data("pima")
+d= pima
+
+d$diastolic[d$diastolic == 0]= NA
+d$triceps[d$triceps==0]=NA
+d$insulin[d$insulin==0]=NA
+d$bmi[d$bmi==0]=NA
+d$age[d$age==0]=NA
+
+summary(d)
+par(mfrow=c(1,3)) #تقسیم جای نمودار به 3 قسمت
+hist(d$age,col = "blue",main = "کل",ylab = "tri",xlab = "age")
+hist(d$age[is.finite(d$triceps)],col = "red",main = "مقادیر موجود",ylab = "tri",xlab = "age")
+hist(d$age[is.na(d$triceps)],col = "green",main = "مقادی ناموجود",ylab = "tri",xlab = "age")
+
+
+```
+
+```{r تمرین2, message=TRUE, warning=TRUE, paged.print=TRUE}
+u= mean(d$insulin,na.rm = T)
+u1 = mean(d$bmi[d$insulin < u],na.rm = T)
+u2 = mean(d$bmi[d$insulin > u],na.rm = T)
+
+
+
+
+```
+
+
+```{r تمرین3, message=TRUE, warning=TRUE, paged.print=TRUE}
+Insulin = d$insulin[is.finite(d$insulin)]
+Test = d$test[is.finite(d$insulin)]
+#d$test=as.character(d$test)
+#tapply(Insulin,Test,mean)
+#Test = levels(d$test)
+##tapply(Insulin,Test,mean)-1.96*tapply(Insulin,Test,sd)/sqrt(tapply(Insulin,Test,length))
+#tapply(Insulin,c(0,1),mean)-1.96*tapply(Insulin,c(0,1),sd)/sqrt(tapply(Insulin,c(0,1),length))
+
+###############
+cbind(tapply(Insulin,Test,mean)-1.96*tapply(Insulin,Test,sd)/sqrt(tapply(Insulin,Test,length)),tapply(Insulin,Test,mean)+1.96*tapply(Insulin,Test,sd)/sqrt
+(tapply(Insulin,Test,length)))
+```
+
+
+```{r تمرین3 روش2, message=TRUE, warning=TRUE, paged.print=TRUE}
+Insulin1 = d$insulin[is.finite(d$insulin)]
+Test1 = d$test[is.finite(d$insulin)]
+##################################
+
+n0= length(Insulin1[Test1 == 0])
+I0 = mean(Insulin1[Test1 == 0])
+sd0 = sd(Insulin1[Test1 == 0])
+Ci0u =I0 +1.96*sd0/sqrt(n0)
+Ci0l =I0 -1.96*sd0/sqrt(n0)
+print(c("for test =0",Ci0l,Ci0u))
+#####################################
+I1 = mean(Insulin1[Test1 == 1])
+sd1 = sd(Insulin1[Test1 == 1])
+n1= length(Insulin1[Test1 == 1])
+Ci1u =I0 +1.96*sd1/sqrt(n1)
+Ci1l =I0 -1.96*sd1/sqrt(n1)
+print(c("for test =1",Ci1l,Ci1u))
+##################################
+
+                                                         
+```
+
